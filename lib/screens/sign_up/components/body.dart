@@ -179,7 +179,7 @@ class _Body extends State<Body> {
               dob: dobController.value.text,
               email: emailController.value.text);
           context.read<SignUpProvider>().signup(signup);
-          Navigator.pushNamed(context, AppRoutes.authPage);
+          Navigator.popAndPushNamed(context, AppRoutes.authPage);
         }
       }
     };

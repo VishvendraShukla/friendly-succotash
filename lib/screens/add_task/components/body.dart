@@ -14,7 +14,12 @@ import 'package:provider/provider.dart';
 class Body extends StatefulWidget {
   final int categoryId;
 
-  const Body({Key? key, required this.categoryId}) : super(key: key);
+  Body({Key? key, required this.categoryId}) : super(key: key);
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController taskNameController = TextEditingController();
+  TextEditingController taskDescriptionController = TextEditingController();
+  TextEditingController dueDateController = TextEditingController();
 
   @override
   BodyState createState() => BodyState();
@@ -22,15 +27,27 @@ class Body extends StatefulWidget {
 
 class BodyState extends State<Body> {
   @override
+  void initState() {
+    if (widget.dueDateController.text.isEmpty) {
+      widget.dueDateController.text = "";
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.taskNameController.dispose();
+    widget.taskDescriptionController.dispose();
+    widget.dueDateController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    TextEditingController taskNameController = TextEditingController();
-    TextEditingController taskDescriptionController = TextEditingController();
-    TextEditingController dueDateController = TextEditingController();
     return SafeArea(
       child: Center(
         child: Form(
-          key: formKey,
+          key: widget.formKey,
           child: Column(
             children: [
               const SizedBox(
@@ -41,7 +58,7 @@ class BodyState extends State<Body> {
                 keyboardType: TextInputType.text,
                 obscureText: false,
                 validatorFunction: TaskNameValidator.validate,
-                textEditingController: taskNameController,
+                textEditingController: widget.taskNameController,
               ),
               const SizedBox(
                 height: 20,
@@ -50,7 +67,7 @@ class BodyState extends State<Body> {
                 labelText: 'Task description',
                 keyboardType: TextInputType.text,
                 obscureText: false,
-                textEditingController: taskDescriptionController,
+                textEditingController: widget.taskDescriptionController,
               ),
               const SizedBox(
                 height: 20,
@@ -58,7 +75,7 @@ class BodyState extends State<Body> {
               AppFormFieldDatePicker(
                 labelText: "Due Date",
                 keyboardType: TextInputType.none,
-                textEditingController: dueDateController,
+                textEditingController: widget.dueDateController,
                 datePickerFunc: () async {
                   DateTime? pickedDate = await showDatePicker(
                       builder: (context, child) {
@@ -83,7 +100,7 @@ class BodyState extends State<Body> {
                       firstDate: DateTime(1990),
                       lastDate: DateTime(2101));
                   setState(() {
-                    dueDateController.text =
+                    widget.dueDateController.text =
                         DateFormat('yyyy-MM-dd').format(pickedDate!);
                   });
                 },
@@ -92,11 +109,12 @@ class BodyState extends State<Body> {
                 text: "Add Task",
                 buttonTextStyle: appButtonTextStyle300,
                 onPressed: () {
-                  if (formKey.currentState!.validate()) {
+                  if (widget.formKey.currentState!.validate()) {
                     var taskVO = TaskVO(
-                        taskCategoryId: widget.categoryId as String,
-                        description: taskDescriptionController.value.text,
-                        dueDate: dueDateController.value.text,
+                        taskCategoryId: widget.categoryId.toString(),
+                        description:
+                            widget.taskDescriptionController.value.text,
+                        dueDate: widget.dueDateController.value.text,
                         status: 'ACTIVE');
                     context.read<TaskCategoryProvider>().createUserTask(taskVO);
                     Navigator.popAndPushNamed(context, AppRoutes.home);

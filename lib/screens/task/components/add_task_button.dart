@@ -6,6 +6,7 @@ import 'package:planner/utils/app_text.dart';
 
 class AddTaskButton extends StatelessWidget {
   late int categoryId;
+
   AddTaskButton({Key? key, required this.categoryId}) : super(key: key);
 
   @override
@@ -13,7 +14,8 @@ class AddTaskButton extends StatelessWidget {
     return FloatingActionButton.extended(
       backgroundColor: AppColors.appButtonDarkColor,
       onPressed: () {
-        Navigator.pushNamed(context, AppRoutes.addTaskPage);
+        Navigator.pushNamed(context, AppRoutes.addTaskPage,
+            arguments: categoryId);
       },
       icon: const Icon(Icons.add),
       label: AppText(

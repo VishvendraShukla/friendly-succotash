@@ -4,7 +4,7 @@ class ApiConstants {
   static String generate = '/access/generate';
   static String signUp = '/access/sign-up';
   static String login = '/access/login';
-  static String taskCategories = '/task-category/get-task-category';
-  static String createCategory = '/task-category/create/category';
-  static String createTask = '/task/save';
+  static String taskCategories = '/task-category';
+  static String createCategory = '/task-category';
+  static String createTask = '/tasks';
 }
